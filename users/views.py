@@ -18,7 +18,6 @@ class RegisterView(APIView):
         serializer =UserCreateSerializer(data=data)
 
         if not serializer.is_valid():
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',serializer.errors)
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
         
@@ -27,7 +26,7 @@ class RegisterView(APIView):
         return Response(user.data ,status=status.HTTP_201_CREATED)
     
 
-class RetrieveUserView(APIView):
+class RetrieveUpdateDeleteUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -36,6 +35,36 @@ class RetrieveUserView(APIView):
         user = UserSerializer(user)
 
         return Response(user.data,status=status.HTTP_200_OK)
+
+    def put(self,request):
+        user = request.user
+        data = request.data
+
+        print('Incoming PUT request data:', data)
+
+
+        update_data = {
+            'first_name': data.get('firstName', user.first_name),
+            'last_name': data.get('lastName', user.last_name),
+            'email': data.get('email', user.email),
+        }
+
+        serializer = UserSerializer(user, data=update_data, partial=True)
+
+        if not serializer.is_valid():
+            print('Serializer errors:', serializer.errors)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer.save()
+        print('Updated user data:', serializer.data)
+
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+    def delete(self,request):
+        user = request.user
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 
 
