@@ -42,6 +42,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
 ]
+MEDIA_URL = '/images/'
+MEDIA_ROOT = BASE_DIR / "images"
+
+AUTH_USER_MODEL = 'users.User'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
