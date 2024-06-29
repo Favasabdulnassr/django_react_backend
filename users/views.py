@@ -169,4 +169,4 @@ class UserListView(APIView):
         user.delete()
         return Response({'detail': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
     
-
+    
